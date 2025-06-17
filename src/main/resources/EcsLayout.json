@@ -1,0 +1,22 @@
+{
+  "timestamp": {
+    "$resolver": "timestamp",
+    "pattern": {
+      "format": "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
+      "timeZone": "UTC"
+    }
+  },
+  "log_level": {
+    "$resolver": "level",
+    "field": "name"
+  },
+  "custom_tags": {
+    "$resolver": "mdc",
+    "flatten": false,
+    "stringified": false
+  },
+  "message": {
+    "$resolver": "message",
+    "stringified": true
+  }
+}

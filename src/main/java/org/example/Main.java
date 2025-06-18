@@ -1,30 +1,35 @@
 package org.example;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.ThreadContext;
+
 import java.util.HashMap;
 
 public class Main {
 
     public static void main(String[] args) {
-        LogLib logLib = new LogLib();
+        WMLoggingLibrary WMlogger = WMLoggingLibrary.builder()
+                .logPath("logs")
+                .infoFileName("info.log")
+                .warnFileName("warn.log")
+                .debugFileName("debug.log")
+                .infoFileSize(5, WMLoggingLibrary.SizeUnit.MB)
+                .warnFileSize(10, WMLoggingLibrary.SizeUnit.MB)
+                .debugFileSize(2, WMLoggingLibrary.SizeUnit.MB)
+                .build();
 
-
-        // Set the log path directly in your code
-        logLib.setLogPath("C:/Users/mario/Documents/Internship Cardinal Health/Logs/log");
-        logLib.setInfoFileSize(15, LogLib.SizeUnit.KB);
-        logLib.setWarnFileSize(16, LogLib.SizeUnit.KB);
-        logLib.setDebugFileName("custom-debug.log");
-        logLib.setInfoFileName("custom-info.log");
-        logLib.setWarnFileName("custom-warn.log");
-
-
-        // Define tags and values
         HashMap<String, String> context = new HashMap<>();
-        context.put("host", "db01");
-        context.put("env", "production");
+        context.put("user","alice");
+        context.put("userID","123");
 
-        logLib.logWarn("Database connection failed", context);
-        logLib.logInfo("Database connection failed", context);
-        logLib.logDebug("Database connection failed", context);
+        Logger logger = LogManager.getLogger(Main.class);
+        for (String key : context.keySet()) {
+            ThreadContext.put(key, context.get(key));
+        }
+        logger.info("Connecting to the DB....");
+        logger.debug("Connecting to the DB123....");
+        logger.warn("Something went wrong while connecting to the DB");
 
     }
 }

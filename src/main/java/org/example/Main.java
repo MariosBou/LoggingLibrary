@@ -9,12 +9,12 @@ public class Main {
 
 
         // Set the log path directly in your code
-        LogLib.setLogPath("C:/Users/mario/Documents/Internship Cardinal Health/Logs/log");
-
-
-        LogLib.setDebugLogFileName("custom-debug.log");
-        LogLib.setInfoLogFileName("custom-info.log");
-        LogLib.setWarnLogFileName("custom-warn.log");
+        logLib.setLogPath("C:/Users/mario/Documents/Internship Cardinal Health/Logs/log");
+        logLib.setInfoFileSize(15, LogLib.SizeUnit.KB);
+        logLib.setWarnFileSize(16, LogLib.SizeUnit.KB);
+        logLib.setDebugFileName("custom-debug.log");
+        logLib.setInfoFileName("custom-info.log");
+        logLib.setWarnFileName("custom-warn.log");
 
 
         // Define tags and values
@@ -22,11 +22,9 @@ public class Main {
         context.put("host", "db01");
         context.put("env", "production");
 
-        LogLib.logWarn("Database connection failed", context);
-        LogLib.logInfo("Database connection failed", context);
-        LogLib.logDebug("Database connection failed", context);
-
-        System.out.println("Current log path: " + LogLib.getLogPath());
+        logLib.logWarn("Database connection failed", context);
+        logLib.logInfo("Database connection failed", context);
+        logLib.logDebug("Database connection failed", context);
 
     }
 }

@@ -12,6 +12,8 @@ public class LogLib {
     private static String log_path;
     private static final Logger logger = LogManager.getLogger(LogLib.class);
     static { initializeLogPath(); }
+
+
     public enum SizeUnit {KB, MB, GB}
 
 
@@ -72,17 +74,16 @@ public class LogLib {
      * @param path The new log directory path
      * @throws IllegalArgumentException if path is invalid
      */
-    public static void setLogPath(String path) {
+    public void setLogPath(String path) {
         validateAndSetPath(path);
         System.setProperty("LOG_PATH", path);
+        log_path=path;
 
         // Reload Log4j2 configuration to apply the new path
         reloadLoggerConfig();
     }
 
-    public static String getLogPath() {
-        return log_path;
-    }
+    public String getLogPath() { return log_path; }
 
 
 
@@ -99,7 +100,7 @@ public class LogLib {
      * Sets the file name for DEBUG log file.
      * @param fileName The new file name (e.g., "debug-custom.log")
      */
-    public static void setDebugLogFileName(String fileName) {
+    public void setDebugFileName(String fileName) {
         if (fileName != null && !fileName.trim().isEmpty()) {
             System.setProperty("DEBUG_LOG_NAME", fileName);
             reloadLoggerConfig();
@@ -110,7 +111,7 @@ public class LogLib {
      * Sets the file name for INFO log file.
      * @param fileName The new file name (e.g., "info-custom.log")
      */
-    public static void setInfoLogFileName(String fileName) {
+    public void setInfoFileName(String fileName) {
         if (fileName != null && !fileName.trim().isEmpty()) {
             System.setProperty("INFO_LOG_NAME", fileName);
             reloadLoggerConfig();
@@ -121,7 +122,7 @@ public class LogLib {
      * Sets the file name for WARN/ERROR log file.
      * @param fileName The new file name (e.g., "warn-custom.log")
      */
-    public static void setWarnLogFileName(String fileName) {
+    public void setWarnFileName(String fileName) {
         if (fileName != null && !fileName.trim().isEmpty()) {
             System.setProperty("WARN_LOG_NAME", fileName);
             reloadLoggerConfig();
@@ -180,19 +181,27 @@ public class LogLib {
      * @param size The maximum file size (e.g., "5MB", "10MB", "1GB")
      * @throws IllegalArgumentException if the size is null or empty
      */
-    public static void setLogFileSize(int size, SizeUnit unit) {
-        if (size <= 0) {
-            throw new IllegalArgumentException("Log size must be a positive integer.");
+    public void setDebugFileSize(int size, SizeUnit unit) {
+        if (size <= 0 || unit == null) {
+            throw new IllegalArgumentException("Invalid debug log file size or unit.");
         }
+        System.setProperty("DEBUG_LOG_SIZE", size + unit.name());
+        reloadLoggerConfig();
+    }
 
-        if (unit == null) {
-            throw new IllegalArgumentException("Size unit must not be null.");
+    public void setInfoFileSize(int size, SizeUnit unit) {
+        if (size <= 0 || unit == null) {
+            throw new IllegalArgumentException("Invalid info log file size or unit.");
         }
+        System.setProperty("INFO_LOG_SIZE", size + unit.name());
+        reloadLoggerConfig();
+    }
 
-        String formattedSize = size + unit.name();
-        System.setProperty("LOG_SIZE", formattedSize);
-
-        // Reload Log4j2 configuration to apply the new size
+    public void setWarnFileSize(int size, SizeUnit unit) {
+        if (size <= 0 || unit == null) {
+            throw new IllegalArgumentException("Invalid warn log file size or unit.");
+        }
+        System.setProperty("WARN_LOG_SIZE", size + unit.name());
         reloadLoggerConfig();
     }
 
@@ -223,22 +232,22 @@ public class LogLib {
 
 
 
-        public static void logDebug(String message, HashMap<String, String> contextData) {
+        public void logDebug(String message, HashMap<String, String> contextData) {
             applyContext(contextData);
             logger.debug(message);
         }
 
-        public static void logInfo(String message, HashMap<String, String> contextData) {
+        public void logInfo(String message, HashMap<String, String> contextData) {
             applyContext(contextData);
             logger.info(message);
         }
 
-        public static void logWarn(String message, HashMap<String, String> contextData) {
+        public void logWarn(String message, HashMap<String, String> contextData) {
             applyContext(contextData);
             logger.warn(message);
         }
 
-        public static void logError(String message, HashMap<String, String> contextData) {
+        public void logError(String message, HashMap<String, String> contextData) {
             applyContext(contextData);
             logger.error(message);
         }

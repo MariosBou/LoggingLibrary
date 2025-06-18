@@ -3,7 +3,9 @@
 
     <Properties>
         <Property name="APP_LOG_ROOT">${sys:LOG_PATH:-logs}</Property>
-        <Property name="LOG_SIZE">${sys:LOG_SIZE:-3MB}</Property>
+        <Property name="DEBUG_LOG_SIZE">${sys:DEBUG_LOG_SIZE:-3MB}</Property>
+        <Property name="INFO_LOG_SIZE">${sys:INFO_LOG_SIZE:-3MB}</Property>
+        <Property name="WARN_LOG_SIZE">${sys:WARN_LOG_SIZE:-3MB}</Property>
         <Property name="DEBUG_LOG_NAME">${sys:DEBUG_LOG_NAME:-debug.log}</Property>
         <Property name="INFO_LOG_NAME">${sys:INFO_LOG_NAME:-info.log}</Property>
         <Property name="WARN_LOG_NAME">${sys:WARN_LOG_NAME:-warn.log}</Property>
@@ -18,7 +20,7 @@
             <LevelRangeFilter minLevel="DEBUG" maxLevel="DEBUG" onMatch="ACCEPT" onMismatch="DENY"/>
             <JsonTemplateLayout eventTemplateUri="classpath:EcsLayout.json"/>
             <Policies>
-                <SizeBasedTriggeringPolicy size="${LOG_SIZE}"/>
+                <SizeBasedTriggeringPolicy size="${DEBUG_LOG_SIZE}"/>
             </Policies>
             <DefaultRolloverStrategy fileIndex="min" max="5"/>
         </RollingFile>
@@ -30,7 +32,7 @@
             <LevelRangeFilter minLevel="INFO" maxLevel="INFO" onMatch="ACCEPT" onMismatch="DENY"/>
             <JsonTemplateLayout eventTemplateUri="classpath:EcsLayout.json"/>
             <Policies>
-                <SizeBasedTriggeringPolicy size="${LOG_SIZE}"/>
+                <SizeBasedTriggeringPolicy size="${INFO_LOG_SIZE}"/>
             </Policies>
             <DefaultRolloverStrategy fileIndex="min" max="5"/>
         </RollingFile>
@@ -42,7 +44,7 @@
             <LevelRangeFilter minLevel="ERROR" maxLevel="WARN" onMatch="ACCEPT" onMismatch="DENY"/>
             <JsonTemplateLayout eventTemplateUri="classpath:EcsLayout.json"/>
             <Policies>
-                <SizeBasedTriggeringPolicy size="${LOG_SIZE}"/>
+                <SizeBasedTriggeringPolicy size="${WARN_LOG_SIZE}"/>
             </Policies>
             <DefaultRolloverStrategy fileIndex="min" max="5"/>
         </RollingFile>

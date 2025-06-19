@@ -4,6 +4,7 @@ import org.apache.logging.log4j.*;
 import org.apache.logging.log4j.core.LoggerContext;
 import java.io.IOException;
 import java.nio.file.*;
+import java.util.HashMap;
 
 public class WMLoggingLibrary {
 
@@ -21,8 +22,12 @@ public class WMLoggingLibrary {
         }
     }
 
+    private final Logger logger;
 
-    private WMLoggingLibrary() { }
+    // Private constructor; only Builder can create an instance
+    private WMLoggingLibrary(Logger logger) {
+        this.logger = logger;
+    }
 
     public static Builder builder() {
         return new Builder();
@@ -36,16 +41,14 @@ public class WMLoggingLibrary {
         private String warnFileSize;
         private String infoFileSize;
         private String debugFileSize;
-
+        private String loggerName = WMLoggingLibrary.class.getName();
 
         public Builder logPath(String path) {
             Path logDirPath = Paths.get(path);
 
             try {
-                // Try to create the directory if it doesn't exist
                 Files.createDirectories(logDirPath);
 
-                // Check if it is a directory and writable
                 if (!Files.isDirectory(logDirPath)) {
                     throw new IllegalArgumentException("The provided path is not a directory: " + path);
                 }
@@ -61,7 +64,6 @@ public class WMLoggingLibrary {
 
             return this;
         }
-
 
         public Builder infoFileName(String name) {
             this.infoFileName = name;
@@ -79,30 +81,27 @@ public class WMLoggingLibrary {
         }
 
         public Builder debugFileSize(int size, SizeUnit unit) {
-            if (size <= 0) {
-                throw new IllegalArgumentException("File size must be positive");
-            }
+            if (size <= 0) throw new IllegalArgumentException("File size must be positive");
             this.debugFileSize = size + unit.getUnit();
             return this;
         }
 
         public Builder infoFileSize(int size, SizeUnit unit) {
-            if (size <= 0) {
-                throw new IllegalArgumentException("File size must be positive");
-            }
+            if (size <= 0) throw new IllegalArgumentException("File size must be positive");
             this.infoFileSize = size + unit.getUnit();
             return this;
         }
 
         public Builder warnFileSize(int size, SizeUnit unit) {
-            if (size <= 0) {
-                throw new IllegalArgumentException("File size must be positive");
-            }
+            if (size <= 0) throw new IllegalArgumentException("File size must be positive");
             this.warnFileSize = size + unit.getUnit();
             return this;
         }
 
-
+        public Builder loggerName(String name) {
+            this.loggerName = name;
+            return this;
+        }
 
         public WMLoggingLibrary build() {
             if (logPath != null) System.setProperty("LOG_PATH", logPath);
@@ -113,12 +112,41 @@ public class WMLoggingLibrary {
             if (infoFileSize != null) System.setProperty("INFO_LOG_SIZE", infoFileSize);
             if (debugFileSize != null) System.setProperty("DEBUG_LOG_SIZE", debugFileSize);
 
+            // Reload configuration
             ((LoggerContext) LogManager.getContext(false)).reconfigure();
-            return new WMLoggingLibrary();
+
+            // Create the logger
+            Logger logger = LogManager.getLogger(loggerName);
+            return new WMLoggingLibrary(logger);
         }
     }
 
-    public Logger getLogger(Class<?> clazz) {
-        return LogManager.getLogger(clazz);
+    public void logDebug(String message, HashMap<String, String> contextData) {
+        applyContext(contextData);
+        logger.debug(message);
+    }
+
+    public void logInfo(String message, HashMap<String, String> contextData) {
+        applyContext(contextData);
+        logger.info(message);
+    }
+
+    public void logWarn(String message, HashMap<String, String> contextData) {
+        applyContext(contextData);
+        logger.warn(message);
+    }
+
+    public void logError(String message, HashMap<String, String> contextData) {
+        applyContext(contextData);
+        logger.error(message);
+    }
+
+    private static void applyContext(HashMap<String, String> contextData) {
+        ThreadContext.clearMap();
+        if (contextData != null) {
+            for (String key : contextData.keySet()) {
+                ThreadContext.put(key, contextData.get(key));
+            }
+        }
     }
 }

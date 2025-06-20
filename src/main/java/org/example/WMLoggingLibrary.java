@@ -131,22 +131,60 @@ public class WMLoggingLibrary {
         logger.info(message);
     }
 
-    public void logWarn(String message, HashMap<String, String> contextData) {
-        applyContext(contextData);
+    public void logWarn(String message, String event, HashMap<String, String> contextData) {
+        HashMap<String, String> warnContext = new HashMap<>();
+
+        if (contextData != null) {
+            warnContext.putAll(contextData);
+        }
+
+        warnContext.put("Event", event);
+
+        applyContext(warnContext);
         logger.warn(message);
     }
 
-    public void logError(String message, HashMap<String, String> contextData) {
-        applyContext(contextData);
+    public void logError(String message, String event, HashMap<String, String> contextData) {
+        HashMap<String, String> errorContext = new HashMap<>();
+
+        if (contextData != null) {
+            errorContext.putAll(contextData);
+        }
+
+        errorContext.put("Event", event);
+
+        applyContext(errorContext);
         logger.error(message);
     }
+
 
     private static void applyContext(HashMap<String, String> contextData) {
         ThreadContext.clearMap();
         if (contextData != null) {
             for (String key : contextData.keySet()) {
-                ThreadContext.put(key, contextData.get(key));
+
+                String value = contextData.get(key);
+
+                if (key == null || key.trim().isEmpty()) {
+                    throw new IllegalArgumentException("Context key cannot be null or empty");
+                }
+                if (value == null || value.trim().isEmpty()) {
+                    throw new IllegalArgumentException("Context value for key '" + key + "' cannot be null or empty");
+                }
+
+                try {
+                    ThreadContext.put(key, value);
+                } catch (Exception e) {
+                    throw new IllegalArgumentException("Failed to add context key: " + key, e);
+                }
             }
+        }
+    }
+
+    private static void applyContext(String contextData) {
+        ThreadContext.clearMap();
+        if (contextData != null && !contextData.trim().isEmpty()) {
+            ThreadContext.put("Event", contextData);
         }
     }
 }

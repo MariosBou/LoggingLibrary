@@ -2,6 +2,7 @@
 <Configuration status="DEBUG">
 
     <Properties>
+        <Property name="LOG_PATTERN">%d{yyyy-MM-dd'T'HH:mm:ss.SSSZ} %X %C [%p]: %m%n</Property>
         <Property name="APP_LOG_ROOT">${sys:LOG_PATH:-logs}</Property>
         <Property name="DEBUG_LOG_SIZE">${sys:DEBUG_LOG_SIZE:-3MB}</Property>
         <Property name="INFO_LOG_SIZE">${sys:INFO_LOG_SIZE:-3MB}</Property>
@@ -18,7 +19,7 @@
                      filePattern="${APP_LOG_ROOT}/${DEBUG_LOG_NAME}.%i"
                      append="true">
             <LevelRangeFilter minLevel="DEBUG" maxLevel="DEBUG" onMatch="ACCEPT" onMismatch="DENY"/>
-            <JsonTemplateLayout eventTemplateUri="classpath:EcsLayout.json"/>
+            <PatternLayout pattern="${LOG_PATTERN}"/>
             <Policies>
                 <SizeBasedTriggeringPolicy size="${DEBUG_LOG_SIZE}"/>
             </Policies>
@@ -30,7 +31,7 @@
                      filePattern="${APP_LOG_ROOT}/${INFO_LOG_NAME}.%i"
                      append="true">
             <LevelRangeFilter minLevel="INFO" maxLevel="INFO" onMatch="ACCEPT" onMismatch="DENY"/>
-            <JsonTemplateLayout eventTemplateUri="classpath:EcsLayout.json"/>
+            <PatternLayout pattern="${LOG_PATTERN}"/>
             <Policies>
                 <SizeBasedTriggeringPolicy size="${INFO_LOG_SIZE}"/>
             </Policies>
@@ -42,7 +43,7 @@
                      filePattern="${APP_LOG_ROOT}/${WARN_LOG_NAME}.%i"
                      append="true">
             <LevelRangeFilter minLevel="ERROR" maxLevel="WARN" onMatch="ACCEPT" onMismatch="DENY"/>
-            <JsonTemplateLayout eventTemplateUri="classpath:EcsLayout.json"/>
+            <PatternLayout pattern="${LOG_PATTERN}"/>
             <Policies>
                 <SizeBasedTriggeringPolicy size="${WARN_LOG_SIZE}"/>
             </Policies>

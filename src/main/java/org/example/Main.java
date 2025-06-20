@@ -14,6 +14,7 @@ public class Main {
                 .infoFileName("info.log")
                 .warnFileName("warn.log")
                 .debugFileName("debug.log")
+                .loggerName("Database")
                 .infoFileSize(5, WMLoggingLibrary.SizeUnit.MB)
                 .warnFileSize(10, WMLoggingLibrary.SizeUnit.MB)
                 .debugFileSize(2, WMLoggingLibrary.SizeUnit.MB)
@@ -24,8 +25,9 @@ public class Main {
 
         logger.logInfo("Application started", context);
         logger.logDebug("This is a debug message", context);
-        logger.logWarn("Warning issued", context);
-        logger.logError("An error occurred", context);
+        logger.logWarn("Warning issued","Empty Product", context);
+        logger.logError("An error occurred","Network Disconnect", context);
+
     }
 }
 

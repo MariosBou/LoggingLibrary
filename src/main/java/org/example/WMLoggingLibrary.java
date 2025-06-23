@@ -112,6 +112,18 @@ public class WMLoggingLibrary {
             if (infoFileSize != null) System.setProperty("INFO_LOG_SIZE", infoFileSize);
             if (debugFileSize != null) System.setProperty("DEBUG_LOG_SIZE", debugFileSize);
 
+            Path configPath = Paths.get("src", "main", "resources", "log4j2.xml");
+            if (!Files.exists(configPath)) {
+                try {
+                    String xml = generateLog4j2();
+                    Files.write(configPath, xml.getBytes());
+                    System.setProperty("log4j.configurationFile", configPath.toUri().toString());
+                } catch (IOException e) {
+                    throw new RuntimeException("Could not create log4j2.xml", e);
+                }
+            }
+
+
             // Reload configuration
             ((LoggerContext) LogManager.getContext(false)).reconfigure();
 
@@ -120,6 +132,51 @@ public class WMLoggingLibrary {
             return new WMLoggingLibrary(logger);
         }
     }
+
+    private static String generateLog4j2() {
+        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<Configuration status=\"DEBUG\">\n" +
+                "    <Properties>\n" +
+                "        <Property name=\"LOG_PATTERN\">%d{yyyy-MM-dd'T'HH:mm:ss.SSSZ} %X %C [%p]: %m%n</Property>\n" +
+                "        <Property name=\"APP_LOG_ROOT\">${sys:LOG_PATH:-logs}</Property>\n" +
+                "        <Property name=\"DEBUG_LOG_SIZE\">${sys:DEBUG_LOG_SIZE:-3MB}</Property>\n" +
+                "        <Property name=\"INFO_LOG_SIZE\">${sys:INFO_LOG_SIZE:-3MB}</Property>\n" +
+                "        <Property name=\"WARN_LOG_SIZE\">${sys:WARN_LOG_SIZE:-3MB}</Property>\n" +
+                "        <Property name=\"DEBUG_LOG_NAME\">${sys:DEBUG_LOG_NAME:-debug.log}</Property>\n" +
+                "        <Property name=\"INFO_LOG_NAME\">${sys:INFO_LOG_NAME:-info.log}</Property>\n" +
+                "        <Property name=\"WARN_LOG_NAME\">${sys:WARN_LOG_NAME:-warn.log}</Property>\n" +
+                "    </Properties>\n" +
+                "    <Appenders>\n" +
+                "        <RollingFile name=\"DebugLog\" fileName=\"${APP_LOG_ROOT}/${DEBUG_LOG_NAME}\" filePattern=\"${APP_LOG_ROOT}/${DEBUG_LOG_NAME}.%i\" append=\"true\">\n" +
+                "            <LevelRangeFilter minLevel=\"DEBUG\" maxLevel=\"DEBUG\" onMatch=\"ACCEPT\" onMismatch=\"DENY\"/>\n" +
+                "            <PatternLayout pattern=\"${LOG_PATTERN}\"/>\n" +
+                "            <Policies><SizeBasedTriggeringPolicy size=\"${DEBUG_LOG_SIZE}\"/></Policies>\n" +
+                "            <DefaultRolloverStrategy fileIndex=\"min\" max=\"5\"/>\n" +
+                "        </RollingFile>\n" +
+                "        <RollingFile name=\"InfoLog\" fileName=\"${APP_LOG_ROOT}/${INFO_LOG_NAME}\" filePattern=\"${APP_LOG_ROOT}/${INFO_LOG_NAME}.%i\" append=\"true\">\n" +
+                "            <LevelRangeFilter minLevel=\"INFO\" maxLevel=\"INFO\" onMatch=\"ACCEPT\" onMismatch=\"DENY\"/>\n" +
+                "            <PatternLayout pattern=\"${LOG_PATTERN}\"/>\n" +
+                "            <Policies><SizeBasedTriggeringPolicy size=\"${INFO_LOG_SIZE}\"/></Policies>\n" +
+                "            <DefaultRolloverStrategy fileIndex=\"min\" max=\"5\"/>\n" +
+                "        </RollingFile>\n" +
+                "        <RollingFile name=\"WarnLog\" fileName=\"${APP_LOG_ROOT}/${WARN_LOG_NAME}\" filePattern=\"${APP_LOG_ROOT}/${WARN_LOG_NAME}.%i\" append=\"true\">\n" +
+                "            <LevelRangeFilter minLevel=\"ERROR\" maxLevel=\"WARN\" onMatch=\"ACCEPT\" onMismatch=\"DENY\"/>\n" +
+                "            <PatternLayout pattern=\"${LOG_PATTERN}\"/>\n" +
+                "            <Policies><SizeBasedTriggeringPolicy size=\"${WARN_LOG_SIZE}\"/></Policies>\n" +
+                "            <DefaultRolloverStrategy fileIndex=\"min\" max=\"5\"/>\n" +
+                "        </RollingFile>\n" +
+                "    </Appenders>\n" +
+                "    <Loggers>\n" +
+                "        <Root level=\"TRACE\">\n" +
+                "            <AppenderRef ref=\"DebugLog\"/>\n" +
+                "            <AppenderRef ref=\"InfoLog\"/>\n" +
+                "            <AppenderRef ref=\"WarnLog\"/>\n" +
+                "        </Root>\n" +
+                "    </Loggers>\n" +
+                "</Configuration>";
+    }
+
+
 
     public void logDebug(String message, HashMap<String, String> contextData) {
         applyContext(contextData);

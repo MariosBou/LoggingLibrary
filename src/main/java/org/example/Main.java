@@ -1,9 +1,5 @@
 package org.example;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.ThreadContext;
-
 import java.util.HashMap;
 
 public class Main {
@@ -30,6 +26,3 @@ public class Main {
 
     }
 }
-
-
-

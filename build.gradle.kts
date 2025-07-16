@@ -17,9 +17,9 @@ dependencies {
     implementation("org.apache.logging.log4j:log4j-core:2.21.0")
     implementation("org.apache.logging.log4j:log4j-api:2.21.0")
     implementation("org.apache.logging.log4j:log4j-slf4j-impl:2.21.0")
+    implementation("org.apache.logging.log4j:log4j-slf4j2-impl:2.21.0")
     implementation("org.apache.logging.log4j:log4j-layout-template-json:2.21.0")
     implementation ("org.apache.logging.log4j:log4j-core:2.21.1")
-
 }
 
 tasks.test {

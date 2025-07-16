@@ -10,6 +10,7 @@
         <Property name="INFO_LOG_NAME">${sys:INFO_LOG_NAME:-info.log}</Property>
         <Property name="WARN_LOG_NAME">${sys:WARN_LOG_NAME:-warn.log}</Property>
     </Properties>
+
     <Appenders>
         <RollingFile name="DebugLog" fileName="${APP_LOG_ROOT}/${DEBUG_LOG_NAME}" filePattern="${APP_LOG_ROOT}/${DEBUG_LOG_NAME}.%i" append="true">
             <LevelRangeFilter minLevel="DEBUG" maxLevel="DEBUG" onMatch="ACCEPT" onMismatch="DENY"/>

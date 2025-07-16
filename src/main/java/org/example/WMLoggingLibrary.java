@@ -42,7 +42,7 @@ public class WMLoggingLibrary {
 
     private final Logger logger;
 
-    // Private constructor; only Builder can create an instance
+    // only Builder can create an instance
     private WMLoggingLibrary(Logger logger) {
         this.logger = logger;
     }

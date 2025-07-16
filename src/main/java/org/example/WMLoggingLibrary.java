@@ -157,7 +157,7 @@ public class WMLoggingLibrary {
             warnContext.putAll(contextData);
         }
 
-        warnContext.put("Event", event);
+        warnContext.put("event", event);
 
         applyContext(warnContext);
         logger.warn(message);
@@ -170,7 +170,7 @@ public class WMLoggingLibrary {
             errorContext.putAll(contextData);
         }
 
-        errorContext.put("Event", event);
+        errorContext.put("event", event);
 
         applyContext(errorContext);
         logger.error(message);
@@ -192,7 +192,7 @@ public class WMLoggingLibrary {
                 }
 
                 try {
-                    ThreadContext.put(key, value);
+                    ThreadContext.put("\"" + key + "\"", "\"" + value + "\"");
                 } catch (Exception e) {
                     throw new IllegalArgumentException("Failed to add context key: " + key, e);
                 }

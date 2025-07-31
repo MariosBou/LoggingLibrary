@@ -21,8 +21,9 @@ public class Main {
 
         logger.logInfo("Application started", context);
         logger.logDebug("This is a debug message", context);
-        logger.logWarn("Warning issued","Empty Product", context);
-        logger.logError("An error occurred","Network Disconnect", context);
+        ArithmeticException e = new ArithmeticException("This is an error message");
+        logger.logWarn("Warning issued","Empty Product", context,e);
+        logger.logError("An error occurred","Network Disconnect", context,e);
 
     }
 }

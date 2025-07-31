@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.*;
 import java.util.HashMap;
+import java.util.Map;
 
 public class WMLoggingLibrary {
 
@@ -140,44 +141,44 @@ public class WMLoggingLibrary {
     }
 
 
-    public void logDebug(String message, HashMap<String, String> contextData) {
+    public void logDebug(String message, Map<String, String> contextData) {
         applyContext(contextData);
-        logger.debug(message);
+        logger.debug("\"" + message + "\"");
     }
 
-    public void logInfo(String message, HashMap<String, String> contextData) {
+    public void logInfo(String message, Map<String, String> contextData) {
         applyContext(contextData);
-        logger.info(message);
+        logger.info("\"" + message + "\"");
     }
 
-    public void logWarn(String message, String event, HashMap<String, String> contextData) {
-        HashMap<String, String> warnContext = new HashMap<>();
+    public void logWarn(String message, String event, Map<String, String> contextData,Exception e) {
+        Map<String, String> warnContext = new HashMap<>();
 
         if (contextData != null) {
             warnContext.putAll(contextData);
         }
 
-        warnContext.put("event", event);
+        warnContext.put("event", event.toLowerCase());
 
         applyContext(warnContext);
-        logger.warn(message);
+        logger.warn("\"" + message + "\"",e);
     }
 
-    public void logError(String message, String event, HashMap<String, String> contextData) {
-        HashMap<String, String> errorContext = new HashMap<>();
+    public void logError(String message, String event, Map<String, String> contextData,Exception e) {
+        Map<String, String> errorContext = new HashMap<>();
 
         if (contextData != null) {
             errorContext.putAll(contextData);
         }
 
-        errorContext.put("event", event);
+        errorContext.put("event", event.toLowerCase());
 
         applyContext(errorContext);
-        logger.error(message);
+        logger.error("\"" + message + "\"",e);
     }
 
 
-    private static void applyContext(HashMap<String, String> contextData) {
+    private static void applyContext(Map<String, String> contextData) {
         ThreadContext.clearMap();
         if (contextData != null) {
             for (String key : contextData.keySet()) {

@@ -1,11 +1,11 @@
-# 🪵 LoggingLibrary
+# LoggingLibrary
 
 A **lightweight and configurable Java logging library** built on top of **Log4j2**, providing flexible, dynamic, and context-aware logging features.  
 This project was developed as part of an internship to explore **customizable logging architectures** for large-scale systems.
 
 ---
 
-## 🚀 Features
+## Features
 
 - **Programmatic Log4j2 Configuration** – No XML needed! Configure everything directly in Java.  
 - **Dynamic Log Paths** – Change log file locations at runtime.  
@@ -15,7 +15,7 @@ This project was developed as part of an internship to explore **customizable lo
 
 ---
 
-## 🧠 Design Overview
+## Design Overview
 
 The library uses a **custom LogManager** to build Log4j2 configurations dynamically.  
 Developers can define:
@@ -25,7 +25,7 @@ Developers can define:
 
 ---
 
-## 🧩 Usage Example
+## Usage Example
 
 ```java
 import org.example.WMLoggingLibrary;
